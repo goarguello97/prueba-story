@@ -13,7 +13,7 @@ class BrandService {
     }
   }
 
-  static async getBrandId(id) {
+  static async getBrandById(id) {
     try {
       const response = await Brand.findByPk(id, {
         include: { model: Product, as: "products" },
