@@ -1,5 +1,4 @@
-import Brand from "../models/Brand.js";
-import Product from "../models/Product.js";
+import { Brand, Product } from "../models/index.js";
 
 class ProductService {
   static async getProducts() {
@@ -26,20 +25,36 @@ class ProductService {
 
   static async addProduct(data) {
     try {
-      const response = await Product.create(data);
-      return { error: true, data: response };
+      const brand = await Brand.findByPk(data.brand_id);
+      const product = await Product.create({ ...data, brand_id: brand.id });
+      return { error: false, data: product };
     } catch (error) {
       return { error: true, data: error };
     }
   }
 
   static async updateProduct(data) {
-    const { id, body } = data;
+    const { id } = data;
     try {
-      const product = await Product.findByPk(id);
-      product = body;
+      const product = await Product.findByPk(id, {
+        include: { model: Brand, as: "brand" },
+      });
+
+      if (data.name) product.name = data.name;
+      if (data.description) product.description = data.description;
+      if (data.price) product.price = data.price;
+      if (data.image_url) product.image_url = data.image_url;
+      if (data.brand_id) {
+        const brand = await Brand.findByPk(data.brand_id);
+        if (brand) await product.setBrand(brand);
+      }
+
       await product.save();
-      return { error: true, data: product };
+
+      const productUpdated = await Product.findByPk(id, {
+        include: { model: Brand, as: "brand" },
+      });
+      return { error: false, data: productUpdated };
     } catch (error) {
       return { error: true, data: error };
     }
@@ -48,7 +63,7 @@ class ProductService {
   static async deleteProduct(id) {
     try {
       const response = await Product.destroy({ where: { id } });
-      return { error: true, data: { message: "Product delete success." } };
+      return { error: false, data: { message: "Product delete success." } };
     } catch (error) {
       return { error: true, data: error };
     }

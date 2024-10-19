@@ -1,5 +1,4 @@
-import Brand from "../models/Brand.js";
-import Product from "../models/Product.js";
+import { Brand, Product } from "../models/index.js";
 
 class BrandService {
   static async getBrand() {
@@ -7,7 +6,7 @@ class BrandService {
       const response = await Brand.findAll({
         include: { model: Product, as: "products" },
       });
-      return { error: true, data: response };
+      return { error: false, data: response };
     } catch (error) {
       return { error: true, data: error };
     }
@@ -18,7 +17,7 @@ class BrandService {
       const response = await Brand.findByPk(id, {
         include: { model: Product, as: "products" },
       });
-      return { error: true, data: response };
+      return { error: false, data: response };
     } catch (error) {
       return { error: true, data: error };
     }
@@ -27,19 +26,28 @@ class BrandService {
   static async addbrand(data) {
     try {
       const response = await Brand.create(data);
-      return { error: true, data: response };
+      return { error: false, data: response };
     } catch (error) {
       return { error: true, data: error };
     }
   }
 
   static async updateBrand(data) {
-    const { id, body } = data;
+    const { id } = data;
     try {
-      const brand = await Brand.findByPk(id);
-      brand = body;
+      const brand = await Brand.findByPk(id, {
+        include: { model: Product, as: "products" },
+      });
+
+      if (data.name) brand.name = data.name;
+      if (data.logo_url) brand.description = data.logo_url;
       await brand.save();
-      return { error: true, data: brand };
+
+      const brandUpdated = await Brand.findByPk(id, {
+        include: { model: Product, as: "products" },
+      });
+
+      return { error: false, data: brandUpdated };
     } catch (error) {
       return { error: true, data: error };
     }
@@ -48,7 +56,7 @@ class BrandService {
   static async deleteBrand(id) {
     try {
       const response = await Brand.destroy({ where: { id } });
-      return { error: true, data: { message: "Brand delete success." } };
+      return { error: false, data: { message: "Brand delete success." } };
     } catch (error) {
       return { error: true, data: error };
     }

@@ -1,41 +1,41 @@
 import ProductService from "../services/ProductService.js";
 
 class ProductController {
-  static async getBrand(req, res) {
-    const { error, data } = ProductService.getBrand();
+  static async getProduct(req, res) {
+    const { error, data } = await ProductService.getProducts();
     if (error) return res.status(400).json(data);
 
     return res.status(200).json(data);
   }
 
-  static async getBrandId(req, res) {
+  static async getProductId(req, res) {
     const { id } = req.params;
-    const { error, data } = ProductService.getBrandById(id);
+    const { error, data } = await ProductService.getProductById(id);
     if (error) return res.status(400).json(data);
 
     return res.status(200).json(data);
   }
 
-  static async addBrand(req, res) {
+  static async addProduct(req, res) {
     const body = req.body;
-    const { error, data } = ProductService.addbrand(body);
+    const { error, data } = await ProductService.addProduct(body);
     if (error) return res.status(400).json(data);
 
     return res.status(201).json(data);
   }
 
-  static async updateBrand(req, res) {
+  static async updateProduct(req, res) {
     const { id } = req.params;
     const body = req.body;
-    const { error, data } = ProductService.updateBrand({ ...body, id });
+    const { error, data } = await ProductService.updateProduct({ ...body, id });
     if (error) return res.status(400).json(data);
 
     return res.status(200).json(data);
   }
 
-  static async deleteBrand(req, res) {
+  static async deleteProduct(req, res) {
     const { id } = req.params;
-    const { error, data } = ProductService.deleteBrand(id);
+    const { error, data } = await ProductService.deleteProduct(id);
     if (error) return res.status(400).json(data);
 
     return res.status(200).json(data);
