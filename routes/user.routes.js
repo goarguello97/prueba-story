@@ -1,13 +1,21 @@
 import express from "express";
 import UserController from "../controllers/UserController.js";
+import isAdmin from "../middleware/isAdmin.js";
+import validateCookie from "../middleware/validateCookie.js";
 
 const userRouter = express.Router();
 
 userRouter.get("/", UserController.getUsers);
-userRouter.get("/:id", UserController.getUserById);
+userRouter.get("/user/:id", UserController.getUserById);
 userRouter.post("/", UserController.addUser);
-userRouter.put("/:id", UserController.updateUser);
-userRouter.delete("/:id", UserController.deleteUser);
+userRouter.put("/user/:id", validateCookie, isAdmin, UserController.updateUser);
+userRouter.delete(
+  "/user/:id",
+  validateCookie,
+  isAdmin,
+  UserController.deleteUser
+);
 userRouter.post("/login", UserController.loginUser);
+userRouter.get("/me", validateCookie, UserController.me);
 
 export default userRouter;

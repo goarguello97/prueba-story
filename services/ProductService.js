@@ -14,22 +14,33 @@ class ProductService {
 
   static async getProductById(id) {
     try {
-      const response = await Product.findByPk(id, {
+      const product = await Product.findByPk(id, {
         include: { model: Brand, as: "brand" },
       });
-      return { error: false, data: response };
+
+      if (!product) throw new Error("Product not found");
+
+      return { error: false, data: product };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
   static async addProduct(data) {
     try {
+      const product = await Product.findOne({ where: { name: data.name } });
+      if (product) throw new Error("Product already exist");
+
       const brand = await Brand.findByPk(data.brand_id);
-      const product = await Product.create({ ...data, brand_id: brand.id });
-      return { error: false, data: product };
+      if (!brand) throw new Error("Brand not found");
+
+      const productToCreate = await Product.create({
+        ...data,
+        brand_id: brand.id,
+      });
+      return { error: false, data: productToCreate };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
@@ -39,6 +50,8 @@ class ProductService {
       const product = await Product.findByPk(id, {
         include: { model: Brand, as: "brand" },
       });
+
+      if (!product) throw new Error("Product not found");
 
       if (data.name) product.name = data.name;
       if (data.description) product.description = data.description;
@@ -56,16 +69,19 @@ class ProductService {
       });
       return { error: false, data: productUpdated };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
   static async deleteProduct(id) {
     try {
+      const product = await Product.findByPk(id);
+      if (!product) throw new Error("Product not found");
+
       const response = await Product.destroy({ where: { id } });
       return { error: false, data: { message: "Product delete success." } };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 }

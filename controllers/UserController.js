@@ -46,6 +46,14 @@ class UserController {
 
     const { error, data } = await UserService.loginUser(body);
     if (error) return res.status(400).json(data);
+    res.cookie("token", data.token);
+    return res.status(200).json(data);
+  }
+
+  static async me(req, res) {
+    const { username } = req.user;
+    const { error, data } = await UserService.me(username);
+    if (error) return res.status(400).json(data);
 
     return res.status(200).json(data);
   }

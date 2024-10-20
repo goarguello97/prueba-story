@@ -5,10 +5,15 @@ import { User } from "../models/index.js";
 class UserService {
   static async addUser(data) {
     try {
-      const user = await User.create(data);
-      return { error: false, data: user };
+      const user = await User.findOne({ where: { username: data.username } });
+
+      if (user) throw new Error("User already exist");
+
+      const userToCreate = await User.create(data);
+
+      return { error: false, data: userToCreate };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
@@ -16,6 +21,8 @@ class UserService {
     const { id } = data;
     try {
       const user = await User.findByPk(id);
+
+      if (!user) throw new Error("User not found");
 
       if (data.username) user.username = data.username;
       if (data.role) user.role = data.role;
@@ -29,8 +36,7 @@ class UserService {
 
       return { error: false, data: userUpdated };
     } catch (error) {
-      console.log(error);
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
@@ -46,18 +52,24 @@ class UserService {
   static async getUserById(id) {
     try {
       const user = await User.findByPk(id);
+
+      if (!user) throw new Error("User not found");
       return { error: false, data: user };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
   static async deleteUser(id) {
     try {
+      const user = await User.findByPk(id);
+
+      if (!user) throw new Error("User not found");
+
       const userDeleted = await User.destroy({ where: { id } });
       return { error: false, data: { message: "User delete success" } };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
     }
   }
 
@@ -67,6 +79,7 @@ class UserService {
       const user = await User.findOne({ where: { username } });
 
       if (!user) throw new Error("User not found");
+
       const validated = user.validatePassword(password);
 
       if (!validated) throw new Error("Password not found");
@@ -81,7 +94,18 @@ class UserService {
 
       return { error: false, data: { token } };
     } catch (error) {
-      return { error: true, data: error };
+      return { error: true, data: { message: error.message } };
+    }
+  }
+
+  static async me(username) {
+    if (!username) throw new Error("Invalid username");
+    try {
+      const user = await User.findOne({ where: { username } });
+      if (!user) throw new Error("User not found");
+      return { error: false, data: user };
+    } catch (error) {
+      return { error: true, data: { message: error.message } };
     }
   }
 }
