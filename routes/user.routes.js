@@ -17,5 +17,6 @@ userRouter.delete(
 );
 userRouter.post("/login", UserController.loginUser);
 userRouter.get("/me", validateCookie, UserController.me);
+userRouter.get("/logout", validateCookie, UserController.logoutUser);
 
 export default userRouter;

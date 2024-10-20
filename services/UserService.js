@@ -108,6 +108,17 @@ class UserService {
       return { error: true, data: { message: error.message } };
     }
   }
+
+  static async logoutUser(username) {
+    try {
+      const user = await User.findOne({ where: { username } });
+      if (!user) throw new Error("User not found");
+
+      return { error: false, data: { message: "Logout successs" } };
+    } catch (error) {
+      return { error: true, data: { message: error.message } };
+    }
+  }
 }
 
 export default UserService;

@@ -57,6 +57,15 @@ class UserController {
 
     return res.status(200).json(data);
   }
+
+  static async logoutUser(req, res) {
+    const { username } = req.user;
+    const { error, data } = await UserService.logoutUser(username);
+    if (error) return res.status(400).json(data);
+
+    res.clearCookie("token");
+    return res.status(200).json(data);
+  }
 }
 
 export default UserController;
