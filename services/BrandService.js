@@ -62,10 +62,13 @@ class BrandService {
 
   static async deleteBrand(id) {
     try {
-      const brand = await Brand.findByPk(id);
+      const brand = await Brand.findByPk(id, {
+        include: { model: Product, as: "products" },
+      });
 
       if (!brand) throw new Error("Brand not found");
-
+      if (brand.products.length > 0)
+        throw new Error("No se puede borrar, tiene productos asignados.");
       const response = await Brand.destroy({ where: { id } });
       return { error: false, data: { message: "Brand delete success." } };
     } catch (error) {

@@ -16,7 +16,7 @@ app.use("/api", router);
 
 const PORT = process.env.PORT || 3001;
 
-db.sync({ force: true }).then(() => {
+db.sync({ force: false }).then(() => {
   console.log("DB connected");
   app.listen(PORT, () => console.log(`Server listen in port ${PORT}`));
 });

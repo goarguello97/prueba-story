@@ -7,7 +7,7 @@ const brandRouter = express.Router();
 
 brandRouter.get("/", BrandController.getBrand);
 brandRouter.post("/", validateCookie, isAdmin, BrandController.addBrand);
-brandRouter.get("/:id", BrandController.getBrandId);
+brandRouter.get("/brand/:id", BrandController.getBrandId);
 brandRouter.put("/:id", validateCookie, isAdmin, BrandController.updateBrand);
 brandRouter.delete(
   "/:id",

@@ -7,7 +7,7 @@ const productRouter = express.Router();
 
 productRouter.get("/", ProductController.getProduct);
 productRouter.post("/", validateCookie, isAdmin, ProductController.addProduct);
-productRouter.get("/:id", ProductController.getProductId);
+productRouter.get("/product/:id", ProductController.getProductId);
 productRouter.put(
   "/:id",
   validateCookie,
