@@ -8,6 +8,7 @@ import router from "./routes/index.js";
 dotenv.config();
 const app = express();
 
+app.set("trust proxy", 1);
 app.use(cors({ origin: process.env.ORIGIN, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());

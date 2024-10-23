@@ -46,7 +46,10 @@ class UserController {
 
     const { error, data } = await UserService.loginUser(body);
     if (error) return res.status(400).json(data);
-    res.cookie("token", data.token);
+    res.cookie("token", data.token, {
+      httpOnly: true,
+      secure: true,
+    });
     return res.status(200).json(data);
   }
 
