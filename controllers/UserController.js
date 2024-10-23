@@ -43,8 +43,11 @@ class UserController {
 
   static async loginUser(req, res) {
     const body = req.body;
-
-    const { error, data } = await UserService.loginUser(body);
+    const { username } = req.body;
+    const { error, data } = await UserService.loginUser({
+      ...body,
+      username: username.toLowerCase(),
+    });
     if (error) return res.status(400).json(data);
 
     return res.status(200).json(data);

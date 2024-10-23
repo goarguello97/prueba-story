@@ -76,7 +76,9 @@ class UserService {
   static async loginUser(data) {
     const { username, password } = data;
     try {
-      const user = await User.findOne({ where: { username } });
+      const user = await User.findOne({
+        where: { username },
+      });
 
       if (!user) throw new Error("User not found");
 

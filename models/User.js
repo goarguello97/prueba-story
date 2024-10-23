@@ -31,6 +31,12 @@ User.init(
   { sequelize, modelName: "user" }
 );
 
+User.beforeValidate((user) => {
+  if (user.username) {
+    user.username = user.username.toLowerCase();
+  }
+});
+
 User.beforeCreate((user) => {
   const hash = user.hash(user.password, bcrypt.genSaltSync(10));
   return (user.password = hash);
