@@ -1,22 +1,17 @@
 import express from "express";
 import ProductController from "../controllers/ProductController.js";
+import getToken from "../middleware/getToken.js";
 import isAdmin from "../middleware/isAdmin.js";
-import validateCookie from "../middleware/validateCookie.js";
 
 const productRouter = express.Router();
 
 productRouter.get("/", ProductController.getProduct);
-productRouter.post("/", validateCookie, isAdmin, ProductController.addProduct);
+productRouter.post("/", getToken, isAdmin, ProductController.addProduct);
 productRouter.get("/product/:id", ProductController.getProductId);
-productRouter.put(
-  "/:id",
-  validateCookie,
-  isAdmin,
-  ProductController.updateProduct
-);
+productRouter.put("/:id", getToken, isAdmin, ProductController.updateProduct);
 productRouter.delete(
   "/:id",
-  validateCookie,
+  getToken,
   isAdmin,
   ProductController.deleteProduct
 );

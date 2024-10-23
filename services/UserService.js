@@ -92,7 +92,7 @@ class UserService {
 
       const token = generateToken(payload);
 
-      return { error: false, data: { token } };
+      return { error: false, data: { payload, token } };
     } catch (error) {
       return { error: true, data: { message: error.message } };
     }

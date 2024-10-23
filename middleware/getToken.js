@@ -1,8 +1,8 @@
 import { validateToken } from "../config/token.js";
 import { User } from "../models/index.js";
 
-async function validateCookie(req, res, next) {
-  const { token } = req.cookies;
+async function getToken(req, res, next) {
+  const token = req.headers["authorization"];
   if (!token) return res.status(400).json({ message: "Invalid token" });
   try {
     const payload = validateToken(token);
@@ -22,4 +22,4 @@ async function validateCookie(req, res, next) {
   }
 }
 
-export default validateCookie;
+export default getToken;
